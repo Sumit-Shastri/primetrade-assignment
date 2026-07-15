@@ -1,5 +1,3 @@
-from idlelib import history
-
 import pandas as pd
 
 fear_greed_data = pd.read_csv(r"datasets/fear_greed_index.csv")
@@ -14,6 +12,8 @@ print(f"No of Rows : {fear_greed_data.shape[0]}, No of Columns : {fear_greed_dat
 print(f"Columns : {list(fear_greed_data.columns)}")
 print(f"Missing values : \n{fear_greed_data.isnull().sum()}")
 print(f"Duplicates : {fear_greed_data.duplicated().sum()}")
+print(fear_greed_data.dtypes)
+print(fear_greed_data["classification"].unique())
 print(fear_greed_data.head())
 
 print("\n\n")
@@ -22,4 +22,36 @@ print(f"No of Rows : {historical_data.shape[0]}, No of columns : {historical_dat
 print(f"Columns : {list(historical_data.columns)}")
 print(f"Missing values : \n{historical_data.isnull().sum()}")
 print(f"Duplicates : {historical_data.duplicated().sum()}")
+print(historical_data.dtypes)
+print(fear_greed_data["classification"].unique())
 print(historical_data.head())
+
+
+# ----
+# Part A -->  Step 2 : Convert TimeStamp to date
+# -----
+
+fear_greed_data['date'] = pd.to_datetime(fear_greed_data['date'])
+
+#convert trader timestamp to date
+
+historical_data['date'] = pd.to_datetime(historical_data['Timestamp'], unit = "ms").dt.date
+historical_data['date'] = pd.to_datetime(historical_data['date'])
+
+print("\n\n")
+print("--- Fear/Greed Range ---\n")
+print(f"From: {fear_greed_data['date'].min()}")
+print(f"To:   {fear_greed_data['date'].max()}")
+print("\n")
+print("\nTrader data date range:\n")
+print(f"From: {historical_data['date'].min()}")
+print(f"To:   {historical_data['date'].max()}")
+
+# merging data sets
+
+merged = pd.merge(historical_data, fear_greed_data[['date', 'classification']], on = 'date', how = 'inner')
+print(f"\nMerged dataset rows : {len(merged)}")
+print(f"Columns : {list(merged.columns)}")
+print(merged[['date', 'classification', 'Closed PnL']].head(10))
+
+print(merged.columns)
