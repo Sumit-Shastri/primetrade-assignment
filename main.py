@@ -1,4 +1,5 @@
 import pandas as pd
+import matplotlib.pyplot as plt
 
 fear_greed_data = pd.read_csv(r"datasets/fear_greed_index.csv")
 historical_data = pd.read_csv(r"datasets/historical_data.csv")
@@ -54,7 +55,6 @@ print(f"\nMerged dataset rows : {len(merged)}")
 print(f"Columns : {list(merged.columns)}")
 print(merged[['date', 'classification', 'Closed PnL']].head(10))
 
-print(merged.columns)
 
 
 # Part A : Step 3 --> Metrics
@@ -91,3 +91,72 @@ long_short = pd.crosstab(
 )
 print("\n\nLong Short :\n")
 print(long_short)
+
+# --------
+# Part B -> Data Analysis
+# --------
+
+
+# Average PnL by market sentiment
+plt.figure(figsize=(8,5))
+pnl_summary["Average_PnL"].plot(kind="bar")
+
+plt.title("Average PnL by Market Sentiment")
+plt.xlabel("Market Sentiment")
+plt.ylabel("Average Closed PnL")
+
+plt.tight_layout()
+plt.savefig("charts/average_pnl.png")
+plt.show()
+
+# win rate by market sentiment
+plt.figure(figsize=(8,5))
+win_rate.plot(kind="bar", color="green")
+
+plt.title("Win Rate by Market Sentiment")
+plt.xlabel("Market Sentiment")
+plt.ylabel("Win Rate (%)")
+
+plt.tight_layout()
+plt.savefig("charts/win_rate.png")
+plt.show()
+
+# Trade Count by market sentiment
+plt.figure(figsize=(8,5))
+pnl_summary["Trade_Count"].plot(kind="bar", color="orange")
+
+plt.title("Trade Count by Market Sentiment")
+plt.xlabel("Market Sentiment")
+plt.ylabel("Number of Trades")
+
+plt.tight_layout()
+plt.savefig("charts/trade_count.png")
+plt.show()
+
+# Long vs Short
+
+plt.figure(figsize=(8,5))
+long_short.plot(kind="bar", stacked=True)
+
+plt.title("Long vs Short Trades by Market Sentiment")
+plt.xlabel("Market Sentiment")
+plt.ylabel("Number of Trades")
+
+plt.tight_layout()
+plt.savefig("charts/long_short.png")
+plt.show()
+
+# average trade size
+
+trade_size = merged.groupby("classification")["Size USD"].mean()
+
+plt.figure(figsize=(8,5))
+trade_size.plot(kind="bar", color="purple")
+
+plt.title("Average Trade Size by Market Sentiment")
+plt.xlabel("Market Sentiment")
+plt.ylabel("Average Trade Size (USD)")
+
+plt.tight_layout()
+plt.savefig("charts/trade_size.png")
+plt.show()
