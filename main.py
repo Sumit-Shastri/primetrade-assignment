@@ -55,3 +55,39 @@ print(f"Columns : {list(merged.columns)}")
 print(merged[['date', 'classification', 'Closed PnL']].head(10))
 
 print(merged.columns)
+
+
+# Part A : Step 3 --> Metrics
+
+# daily PnL per trader
+pnl_summary = merged.groupby("classification")["Closed PnL"].agg(
+    Total_PnL = "sum",
+    Average_PnL = "mean",
+    Median_PnL = "median",
+    Trade_Count = "count",
+)
+print("\n\nPnL Summary : \n")
+print(pnl_summary)
+
+
+# Win rate
+
+merged['Win'] = merged['Closed PnL'] > 0
+win_rate = merged.groupby("classification")["Win"].mean() * 100
+print("\n\nWin Rate :\n")
+print(win_rate)
+
+# trades per day
+
+trades_per_day = merged.groupby("date").size().reset_index(name = "trades_per_day")
+print("\n\nTrades per Day :\n")
+print(trades_per_day)
+
+# long/short ratio
+
+long_short = pd.crosstab(
+    merged["classification"],
+    merged["Side"]
+)
+print("\n\nLong Short :\n")
+print(long_short)
